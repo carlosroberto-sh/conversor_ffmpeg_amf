@@ -3,7 +3,7 @@
 
 import sys
 import os
-import glob # Ainda pode ser útil para referência, mas usaremos os.listdir para case-insensitivity
+import glob 
 import subprocess
 
 from PyQt6.QtWidgets import (
@@ -226,7 +226,7 @@ class ConverterApp(QMainWindow):
         main_layout.addWidget(folder_selection_group)
 
 
-        # --- Configurações do FFmpeg (como antes) ---
+        # --- Configurações do FFmpeg ---
         settings_groupbox = QGroupBox("Configurações do FFmpeg")
         settings_form_layout = QFormLayout()
 
@@ -267,7 +267,7 @@ class ConverterApp(QMainWindow):
         main_layout.addWidget(settings_groupbox)
         self.update_ffmpeg_options_visibility()
 
-        # --- Botões de Ação (como antes) ---
+        # --- Botões de Ação---
         action_layout = QHBoxLayout()
         self.start_button = QPushButton("Iniciar Conversão")
         self.start_button.clicked.connect(self.start_conversion_process)
@@ -280,7 +280,7 @@ class ConverterApp(QMainWindow):
         action_layout.addWidget(self.cancel_button)
         main_layout.addLayout(action_layout)
 
-        # --- Barra de Progresso (como antes) ---
+        # --- Barra de Progresso ---
         self.progress_bar = QProgressBar()
         self.progress_bar.setValue(0)
         self.progress_bar.setTextVisible(True)
@@ -288,7 +288,7 @@ class ConverterApp(QMainWindow):
         main_layout.addWidget(QLabel("Progresso Geral:"))
         main_layout.addWidget(self.progress_bar)
 
-        # --- Log (como antes) ---
+        # --- Log ---
         self.log_area = QTextEdit()
         self.log_area.setReadOnly(True)
         self.log_area.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -302,7 +302,7 @@ class ConverterApp(QMainWindow):
         main_layout.addWidget(self.log_area)
 
     @pyqtSlot()
-    def update_ffmpeg_options_visibility(self): # Como antes
+    def update_ffmpeg_options_visibility(self): 
         rc_mode = self.rc_mode_combo.currentText()
         is_cqp = (rc_mode == "cqp")
         is_vbr_cbr = (rc_mode == "vbr_peak" or rc_mode == "cbr")
@@ -316,7 +316,7 @@ class ConverterApp(QMainWindow):
         self.max_bitrate_edit.setVisible(is_vbr_cbr)
 
 
-    def select_input_folder(self): # Como antes
+    def select_input_folder(self):
         folder = QFileDialog.getExistingDirectory(self, "Selecionar Pasta de Entrada", self.input_dir_path or os.path.expanduser("~"))
         if folder:
             self.input_dir_path = folder
@@ -327,14 +327,14 @@ class ConverterApp(QMainWindow):
                 self.output_dir_path = suggested_output
                 self.output_lineedit.setText(suggested_output)
 
-    def select_output_folder(self): # Como antes
+    def select_output_folder(self):
         folder = QFileDialog.getExistingDirectory(self, "Selecionar Pasta de Saída", self.output_dir_path or os.path.expanduser("~"))
         if folder:
             self.output_dir_path = folder
             self.output_lineedit.setText(folder)
             self.append_log_message(f"Pasta de saída selecionada: {folder}")
 
-    def start_conversion_process(self): # Modificado para coletar formatos de entrada
+    def start_conversion_process(self):
         if not self.input_dir_path:
             QMessageBox.warning(self, "Aviso", "Por favor, selecione uma pasta de entrada.")
             return
@@ -352,7 +352,7 @@ class ConverterApp(QMainWindow):
             QMessageBox.warning(self, "Aviso", "Por favor, especifique pelo menos um formato de arquivo de entrada.")
             return
 
-        current_ffmpeg_params = { # Como antes
+        current_ffmpeg_params = { 
             "VIDEO_CODEC_AMF": self.video_codec_combo.currentText(),
             "RC_MODE": self.rc_mode_combo.currentText(),
             "QP_VALUE": self.qp_value_edit.text(),
@@ -389,18 +389,18 @@ class ConverterApp(QMainWindow):
         
         self.conversion_thread.start()
 
-    def cancel_conversion_process(self): # Como antes
+    def cancel_conversion_process(self): 
         self.append_log_message("Tentando cancelar a conversão...")
         if self.conversion_worker:
             self.conversion_worker.stop_conversions()
 
     @pyqtSlot(str)
-    def append_log_message(self, message): # Como antes
+    def append_log_message(self, message): 
         self.log_area.append(message)
         self.log_area.verticalScrollBar().setValue(self.log_area.verticalScrollBar().maximum())
 
     @pyqtSlot(int, int)
-    def update_overall_progress_bar(self, current_value, max_value): # Como antes
+    def update_overall_progress_bar(self, current_value, max_value):
         if self.progress_bar.maximum() != max_value: # Define o máximo apenas uma vez ou se mudar
             self.progress_bar.setMaximum(max_value)
         self.progress_bar.setValue(current_value)
@@ -423,7 +423,7 @@ class ConverterApp(QMainWindow):
         self.conversion_worker = None
 
     @pyqtSlot(str)
-    def handle_critical_error(self, error_message): # Como antes
+    def handle_critical_error(self, error_message): 
         QMessageBox.critical(self, "Erro Crítico", error_message)
         self.append_log_message(f"ERRO CRÍTICO: {error_message}")
         self.start_button.setEnabled(True)
@@ -434,7 +434,7 @@ class ConverterApp(QMainWindow):
         self.conversion_thread = None
         self.conversion_worker = None
         
-    def closeEvent(self, event): # Como antes
+    def closeEvent(self, event): 
         if self.conversion_thread and self.conversion_thread.isRunning():
             reply = QMessageBox.question(self, 'Sair', 
                                        "Uma conversão está em progresso. Deseja realmente sair e cancelar?",
